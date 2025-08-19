@@ -1,4 +1,13 @@
-body {
+html, body {
   margin: 0;
-  overflow: hidden;
+  padding: 0;
+  overflow: hidden; /* Keep this for full-height panels on /editor */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  margin: 0;
 }
