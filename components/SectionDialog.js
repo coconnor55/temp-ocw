@@ -1,6 +1,5 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
-import '../styles/modal.css'; // Adjust path if styles/ is not in root
 
 Modal.setAppElement('#__next'); // For accessibility
 
