@@ -7,7 +7,7 @@ import debounce from 'lodash.debounce';
 import { Disclosure } from '@headlessui/react';
 import { supabase } from '../utils/supabase';
 import Auth from '../components/Auth';
-import '../styles/editor.css'; // Import new CSS
+//import '../styles/editor.css'; // Import new CSS
 
 export default function Editor() {
   const [mainContent, setMainContent] = useState('');
