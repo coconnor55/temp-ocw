@@ -5,8 +5,8 @@ import Sidebar from '../components/Sidebar';
 import { useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import { Disclosure } from '@headlessui/react';
-import { supabase } from '../utils/supabase'; // Ensure this path matches your project
-import Auth from '../components/Auth'; // Assuming you created this
+import { supabase } from '../utils/supabase';
+import Auth from '../components/Auth';
 
 export default function Editor() {
   const [mainContent, setMainContent] = useState('');
@@ -14,7 +14,6 @@ export default function Editor() {
   const [checkmarks, setCheckmarks] = useState({});
   const [user, setUser] = useState(null);
 
-  // Auth check on mount
   useEffect(() => {
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -22,7 +21,6 @@ export default function Editor() {
     };
     getUser();
 
-    // Subscribe to auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user);
     });
@@ -31,7 +29,6 @@ export default function Editor() {
     };
   }, []);
 
-  // Mock AI analysis
   const analyzeInput = debounce((text) => {
     const wordCount = text.split(' ').length;
     setCheckmarks({
@@ -51,7 +48,7 @@ export default function Editor() {
   }, [mainContent]);
 
   const handleSectionClick = (section) => {
-    // Placeholder for section-specific logic
+    // ...
   };
 
   const handleDialogClose = (section, content) => {
@@ -61,15 +58,11 @@ export default function Editor() {
     }
   };
 
-  // Show auth if no user, otherwise render editor
   if (!user) {
     return <Auth onAuthSuccess={(u) => setUser(u)} />;
   }
 
-  // Simple tier check (expand with specific limits later)
   if (user.user_metadata?.tier !== 'paid') {
-    // Example: Disable claims or add a warning
-    // For now, just log or show a message
     console.log('Free tier limitations applied');
   }
 
