@@ -1,0 +1,23 @@
+/* Sidebar styling */
+.sidebar-panel {
+  background-color: #f5e8c7; /* Almond color */
+  padding: 10px;
+  overflow: auto; /* Scroll if needed */
+}
+
+/* Resizable border hover effect */
+.resizable-panel + .resizable-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 1;
+}
+
+.resizable-panel:hover + .resizable-panel::before,
+.resizable-panel + .resizable-panel:hover::before {
+  background: #ccc; /* Visible border on hover */
+}

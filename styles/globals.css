@@ -1,7 +1,8 @@
+/* Existing content */
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Keep this for full-height panels on /editor */
+  overflow: hidden;
 }
 
 * {
@@ -10,4 +11,27 @@ html, body {
 
 h1 {
   margin: 0;
+}
+
+/* New styles for main window */
+.main-panel textarea {
+  width: 100%;
+  height: 100%; /* Fill vertical space */
+  padding: 10px; /* Match left padding */
+  margin: 0; /* Remove default margin */
+  resize: none; /* Prevent user resize */
+  border: none; /* Remove default border if any */
+  background: white; /* Ensure contrast */
+}
+
+.main-panel {
+  padding: 10px; /* Match left padding/margin */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Ensure panels adjust to content */
+.resizable-panel {
+  overflow: auto; /* Allow scroll if content exceeds */
 }
