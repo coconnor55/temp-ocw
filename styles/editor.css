@@ -1,35 +1,22 @@
-/* Sidebar styling */
 .sidebar-panel {
   background-color: #f5e8c7; /* Almond color */
   padding: 10px;
-  overflow: auto; /* Scrollbar appears when content overflows */
+  overflow: auto; /* Scrollbar for overflow */
 }
 
-/* Resizable border hover effect */
-.resizable-panel + .resizable-panel {
-  position: relative; /* Ensure relative positioning for border */
+.resizable-panel {
+  overflow: auto;
+  transition: flex-basis 0.2s; /* Smooth resize */
 }
 
-.resizable-panel + .resizable-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -5px; /* Move to the left edge of the sidebar panel */
+/* Resizable handle */
+.resize-handle {
   width: 5px;
   background: transparent;
   cursor: col-resize;
-  z-index: 10; /* Above other content */
-  transition: background 0.2s; /* Smooth hover effect */
+  z-index: 10;
 }
 
-.resizable-panel:hover + .resizable-panel::before,
-.resizable-panel + .resizable-panel:hover::before {
-  background: #ccc; /* Visible border on hover */
-}
-
-/* Ensure panels are resizable */
-.resizable-panel {
-  overflow: auto; /* Maintain scrollbar */
-  transition: flex-basis 0.2s; /* Smooth resize animation */
+.resize-handle:hover {
+  background: #ccc; /* Gray bar on hover */
 }

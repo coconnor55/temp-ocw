@@ -1,6 +1,6 @@
 'use client';
 import Layout from '../components/Layout';
-import { PanelGroup, Panel } from 'react-resizable-panels';
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'; // Import ResizeHandle
 import Sidebar from '../components/Sidebar';
 import { useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
@@ -90,6 +90,7 @@ export default function Editor() {
             </Disclosure>
           ))}
         </Panel>
+        <PanelResizeHandle className="resize-handle" /> {/* Add resize handle */}
         <Panel defaultSize={30} minSize={20} className="sidebar-panel resizable-panel">
           <Sidebar checkmarks={checkmarks} onSectionClick={handleSectionClick} onDialogClose={handleDialogClose} />
         </Panel>
