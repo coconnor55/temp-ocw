@@ -1,5 +1,6 @@
-import '../styles/globals.css'; // Add this line
-import '../styles/modal.css'; // Adjust path if styles/ is not in root
+import '../styles/globals.css'; 
+import '../styles/modal.css';
+import '../styles/authModal.css';
 
 function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />;
