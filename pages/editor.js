@@ -1,6 +1,6 @@
 'use client';
 import Layout from '../components/Layout';
-import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'; // Import ResizeHandle
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import Sidebar from '../components/Sidebar';
 import { useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
@@ -14,6 +14,7 @@ export default function Editor() {
   const [insertedBoxes, setInsertedBoxes] = useState([]);
   const [checkmarks, setCheckmarks] = useState({});
   const [user, setUser] = useState(null);
+  const [appType, setAppType] = useState('provisional'); // Default, update from Supabase
 
   useEffect(() => {
     const getUser = async () => {
@@ -30,23 +31,47 @@ export default function Editor() {
     };
   }, []);
 
+  // Fetch application data (assuming navigated from Dashboard with app ID)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const appId = params.get('id');
+    if (user && appId) {
+      const fetchApplication = async () => {
+        const { data, error } = await supabase
+          .from('applications')
+          .select('type')
+          .eq('id', appId)
+          .eq('user_id', user.id)
+          .single();
+        if (error) console.error('Fetch error:', error);
+        else setAppType(data.type);
+      };
+      fetchApplication();
+    }
+  }, [user]);
+
   const analyzeInput = debounce((text) => {
     const wordCount = text.split(' ').length;
-    setCheckmarks({
+    const baseCheckmarks = {
       Title: wordCount > 50,
-      'Cross-Reference to Related Applications': wordCount > 100,
-      Background: wordCount > 200,
-      'Summary of the Invention': wordCount > 300,
-      'Brief Description of the Drawings': wordCount > 400,
-      'Detailed Description of the Invention': wordCount > 500,
-      Claims: wordCount > 600,
-      Abstract: wordCount > 700,
-    });
+      'Background': wordCount > 100,
+      'Summary of the Invention': wordCount > 200,
+      'Detailed Description': wordCount > 300,
+    };
+    if (appType === 'non-provisional') {
+      Object.assign(baseCheckmarks, {
+        'Cross-Reference to Related Applications': wordCount > 400,
+        'Brief Description of the Drawings': wordCount > 500,
+        'Claims': wordCount > 600,
+        'Abstract': wordCount > 700,
+      });
+    }
+    setCheckmarks(baseCheckmarks);
   }, 1000);
 
   useEffect(() => {
     analyzeInput(mainContent);
-  }, [mainContent]);
+  }, [mainContent, appType]);
 
   const handleSectionClick = (section) => {
     // ...
@@ -59,12 +84,30 @@ export default function Editor() {
     }
   };
 
+  const handleSave = () => {
+    const draft = { mainContent, insertedBoxes };
+    localStorage.setItem('patentDraft', JSON.stringify(draft));
+    alert('Draft saved locally!');
+  };
+
+  const handleExport = () => {
+    const draft = { mainContent, insertedBoxes };
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(draft));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', 'patent_draft.json');
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   if (!user) {
     return <Auth onAuthSuccess={(u) => setUser(u)} />;
   }
 
-  if (user.user_metadata?.tier !== 'paid') {
-    console.log('Free tier limitations applied');
+  if (user.user_metadata?.tier !== 'paid' && appType === 'non-provisional') {
+    console.log('Free tier limits applied: Non-provisional restricted');
+    // Could redirect or disable features
   }
 
   return (
@@ -90,11 +133,15 @@ export default function Editor() {
             </Disclosure>
           ))}
         </Panel>
-        <PanelResizeHandle className="resize-handle" /> {/* Add resize handle */}
+        <PanelResizeHandle className="resize-handle" />
         <Panel defaultSize={30} minSize={20} className="sidebar-panel resizable-panel">
-          <Sidebar checkmarks={checkmarks} onSectionClick={handleSectionClick} onDialogClose={handleDialogClose} />
+          <Sidebar checkmarks={checkmarks} onSectionClick={handleSectionClick} onDialogClose={handleDialogClose} appType={appType} />
         </Panel>
       </PanelGroup>
+      <div style={{ position: 'fixed', bottom: '10px', right: '10px' }}>
+        <button onClick={handleSave}>Save</button>
+        <button onClick={handleExport}>Export</button>
+      </div>
     </Layout>
   );
 }
