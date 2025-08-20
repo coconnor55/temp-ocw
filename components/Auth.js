@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import Modal from 'react-modal';
-import '../styles/authModal.css'; // Import new CSS
 
 Modal.setAppElement('#__next');
 
